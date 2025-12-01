@@ -23,6 +23,13 @@ public class Tablero {
         this.tabl = tabl;
     }
 
+    public char[][] getDisp() {
+        return disp;
+    }
+    public void setDisp(char[][] disp) {
+        this.disp = disp;
+    }
+    
     public Ship[] getShips() {
         return ships;
     }
@@ -58,6 +65,67 @@ public class Tablero {
         }
     }
     
+    public void tableroCambio(int arma, Arma arsenal) {
+        switch (arsenal.getArmas()[arma]) {
+            case 1,2:
+                
+                break;
+            case 3: //escaner de columna
+                int colTarg; do {
+                    colTarg = SC.scanInt("@Ingrese columna para tirar el escaner: ");
+                } while (
+                        !(colTarg >= 0 && colTarg < this.tabl.length)
+                        );
+                for (int i = 0; i < this.tabl.length; i++) {
+                    for (int j = 0; j < this.tabl[0].length; j++) {
+                        if (j == colTarg) {
+                            this.disp[i][j] = this.scannerCheck(i, j);
+                        }
+                    }
+                }
+                break;
+            case 4: //escaner de fila
+                int rowTarg; do {
+                    rowTarg = SC.scanInt("@Ingrese columna para tirar el escaner: ");
+                } while (
+                        !(rowTarg >= 0 && rowTarg < this.tabl.length)
+                        );
+                for (int i = 0; i < this.tabl.length; i++) {
+                    for (int j = 0; j < this.tabl[0].length; j++) {
+                        if (i == rowTarg) {
+                            this.disp[i][j] = this.scannerCheck(i, j);
+                        }
+                    }
+                }
+                break;
+        }
+        
+        arsenal.getArmas()[arma] = 0; SC.condenseIntArr(arsenal.getArmas(), 0);
+        
+    }
     
+    private char scannerCheck(int i, int j) {
+        boolean[] x2case = new boolean[]{false, false};
+        char res = '*';
+        if (j-1 >= 0) {
+            if (this.tabl[i][j-1] == 'X') {
+                res = '<';
+                x2case[0] = true;
+            }
+        }
+        if (j+1 < this.tabl.length) {
+            if (this.tabl[i][j+1] == 'X') {
+                res = '>';
+                x2case[1] = true;
+            }
+        }
+        if (x2case[0] && x2case[1]) {
+            res = '!';
+        }
+        if ((!(x2case[0]) && !(x2case[1])) || this.tabl[i][j] == 'X') {
+            res = '*';
+        }
+        return res;
+    }
     
 }

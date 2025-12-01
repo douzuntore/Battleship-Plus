@@ -15,13 +15,17 @@ public class Progra1S8Proyecto {
         
         Tablero JuegoNormal = new Tablero();
         
-        Ship nave = new Ship(1, 4, "Tahoe", JuegoNormal.getTabl());
-        
-        nave.printShip();
-        
         JuegoNormal.añadirNaves(new Random().nextInt(5,8));
         
         SC.printCharBiArr(JuegoNormal.getTabl(), "-", "]");
+        
+        Arma arsn = new Arma(8);
+        
+        SC.printIntArr(arsn.getArmas(), "_", " ");
+        
+        JuegoNormal.tableroCambio(SC.scanInt("_"), arsn);
+        
+        SC.printCharBiArr(JuegoNormal.getDisp(), "-", "]");
         
     }
     
