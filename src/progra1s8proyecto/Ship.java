@@ -16,6 +16,7 @@ public class Ship {
     private boolean defeat = false;
     private int[] Yspaces;
     private int[] Xspaces;
+    private boolean sonared = false;
 
     public int getLngY() {
         return lngY;
@@ -72,6 +73,14 @@ public class Ship {
     public void setXspaces(int[] Xspaces) {
         this.Xspaces = Xspaces;
     }
+
+    public boolean isSonared() {
+        return sonared;
+    }
+    public void setSonared(boolean sonared) {
+        this.sonared = sonared;
+    }
+    
     
     
     public Ship() {

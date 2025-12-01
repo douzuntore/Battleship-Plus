@@ -8,6 +8,8 @@ package progra1s8proyecto;
  *
  * @author samuelzun
  */
+import java.util.Random;
+
 public class Tablero {
     
     private char[][] tabl = SC.fillCharBiArr(new char[10][10], ' ');
@@ -49,12 +51,14 @@ public class Tablero {
         this.disp = SC.fillCharBiArr(new char[lng][lng], ' ');
     }
     
+    // Creacion de naves dentro de la memoria
+    
     public void añadirNaves(int amnt) {
         this.ships = new Ship[amnt];
         for (int i = 0; i < amnt; i++) {
             Ship temp; do {
                 temp = new Ship(1, 4, "Nave", this.tabl);
-                if (this.tabl[temp.getPosY()][temp.getPosX()] == 'X') {continue;}
+                if (this.shipCheck(temp)) {continue;}
                 for (int jy = 0; jy < temp.getYspaces().length; jy++) {
                     for (int jx = 0; jx < temp.getXspaces().length; jx++) {
                         this.tabl[temp.getYspaces()[jy]][temp.getXspaces()[jx]] = 'X';
@@ -65,12 +69,97 @@ public class Tablero {
         }
     }
     
+    private boolean shipCheck(Ship shp) {
+        boolean invalid = false;
+        for (int i = 0; i < shp.getYspaces().length; i++) {
+            for (int j = 0; j < shp.getXspaces().length; j++) {
+                if (this.tabl[shp.getYspaces()[i]][shp.getXspaces()[j]] == 'X') {
+                    invalid = true;
+                }
+            }
+        }
+        return invalid;
+    }
+    // Cambio del tablero en base a la arma usada
+    
     public void tableroCambio(int arma, Arma arsenal) {
         switch (arsenal.getArmas()[arma]) {
-            case 1,2:
+            case 1: //sonar
                 
                 break;
-            case 3: //escaner de columna
+            case 2: //micro sonares
+                for (int z = 0; z < 2; z++) {
+                    int[] mSonarPosXY;
+                    boolean inverted = new Random().nextBoolean(); 
+                    boolean alrsonar = false; do {
+                        mSonarPosXY = new int[]{
+                            new Random().nextInt(0, this.tabl.length-3), 
+                            new Random().nextInt(0, this.tabl.length-3)
+                        }; alrsonar = false;
+                        for (int i = 0; i < 3; i++) {
+                            for (int j = 0; j < 3; j++) {
+                                if (this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] >= 48 && 
+                                    this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] <= 57
+                                    ) {
+                                    alrsonar = true;
+                                }
+                            }
+                        }
+                    } while (alrsonar);
+                    
+                    int sonaramnt = 0;
+                    
+                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
+                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
+                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
+                            if (this.tabl[i][j] == 'X') {
+                                for (int s = 0; s < this.ships.length; s++) {
+                                    for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
+                                        for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
+                                            if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
+                                                if (!this.ships[s].isSonared()) {
+                                                    this.ships[s].setSonared(true);
+                                                    sonaramnt++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
+                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
+                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
+                            if (this.tabl[i][j] == 'X') {
+                                for (int s = 0; s < this.ships.length; s++) {
+                                    for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
+                                        for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
+                                            if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
+                                                if (this.ships[s].isSonared()) {
+                                                    this.ships[s].setSonared(false);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
+                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
+                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
+                            this.disp[i][j] = (Integer.toString(sonaramnt)).charAt(0);
+                        }
+                    }
+                            
+                }
+                    
+                
+                break;
+            case 3: //laser escaner de columna
                 int colTarg; do {
                     colTarg = SC.scanInt("@Ingrese columna para tirar el escaner: ");
                 } while (
@@ -84,7 +173,7 @@ public class Tablero {
                     }
                 }
                 break;
-            case 4: //escaner de fila
+            case 4: //laser escaner de fila
                 int rowTarg; do {
                     rowTarg = SC.scanInt("@Ingrese columna para tirar el escaner: ");
                 } while (
@@ -101,6 +190,8 @@ public class Tablero {
         }
         
         arsenal.getArmas()[arma] = 0; SC.condenseIntArr(arsenal.getArmas(), 0);
+        
+        
         
     }
     
@@ -126,6 +217,14 @@ public class Tablero {
             res = '*';
         }
         return res;
+    }
+    
+    private boolean sonarArea(int i, int j, int[] pos, boolean inv) {
+        return 
+        (i == pos[0] && j == pos[1] && !inv) ||
+        (i == pos[0]+2 && j == pos[1]+2 && !inv) ||
+        (i == pos[0]+2 && j == pos[1] && inv) ||
+        (i == pos[0] && j == pos[1]+2 && inv);
     }
     
 }
