@@ -10,7 +10,8 @@ package progra1s8proyecto;
  */
 public class Tablero {
     
-    private char[][] tabl;
+    private char[][] tabl = SC.fillCharBiArr(new char[10][10], ' ');
+    private char[][] disp = SC.fillCharBiArr(new char[10][10], ' ');
     private Ship[] ships;
     
     private static Shortcuts SC = new Shortcuts();
@@ -37,9 +38,26 @@ public class Tablero {
     // Constructor
 
     public Tablero(int lng) {
-        this.tabl = new char[lng][lng];
+        this.tabl = SC.fillCharBiArr(new char[lng][lng], ' ');
+        this.disp = SC.fillCharBiArr(new char[lng][lng], ' ');
     }
-
+    
+    public void añadirNaves(int amnt) {
+        this.ships = new Ship[amnt];
+        for (int i = 0; i < amnt; i++) {
+            Ship temp; do {
+                temp = new Ship(1, 4, "Nave", this.tabl);
+                if (this.tabl[temp.getPosY()][temp.getPosX()] == 'X') {continue;}
+                for (int jy = 0; jy < temp.getYspaces().length; jy++) {
+                    for (int jx = 0; jx < temp.getXspaces().length; jx++) {
+                        this.tabl[temp.getYspaces()[jy]][temp.getXspaces()[jx]] = 'X';
+                    }
+                }
+                this.ships[i] = temp;
+            } while (false);
+        }
+    }
+    
     
     
 }

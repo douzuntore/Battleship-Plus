@@ -58,6 +58,21 @@ public class Ship {
     public void setDefeat(boolean defeat) {
         this.defeat = defeat;
     }
+
+    public int[] getYspaces() {
+        return Yspaces;
+    }
+    public void setYspaces(int[] Yspaces) {
+        this.Yspaces = Yspaces;
+    }
+
+    public int[] getXspaces() {
+        return Xspaces;
+    }
+    public void setXspaces(int[] Xspaces) {
+        this.Xspaces = Xspaces;
+    }
+    
     
     public Ship() {
     }
