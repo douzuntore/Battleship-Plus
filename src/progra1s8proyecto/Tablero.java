@@ -58,7 +58,7 @@ public class Tablero {
         for (int i = 0; i < amnt; i++) {
             Ship temp; do {
                 temp = new Ship(1, 4, "Nave", this.tabl);
-                if (this.shipCheck(temp)) {continue;}
+                if (this.shipCheck(temp)) {i--; continue;}
                 for (int jy = 0; jy < temp.getYspaces().length; jy++) {
                     for (int jx = 0; jx < temp.getXspaces().length; jx++) {
                         this.tabl[temp.getYspaces()[jy]][temp.getXspaces()[jx]] = 'X';
@@ -85,79 +85,10 @@ public class Tablero {
     public void tableroCambio(int arma, Arma arsenal) {
         switch (arsenal.getArmas()[arma]) {
             case 1: //sonar
-                
+                this.normalSonar();
                 break;
             case 2: //micro sonares
-                for (int z = 0; z < 2; z++) {
-                    int[] mSonarPosXY;
-                    boolean inverted = new Random().nextBoolean(); 
-                    boolean alrsonar = false; do {
-                        mSonarPosXY = new int[]{
-                            new Random().nextInt(0, this.tabl.length-3), 
-                            new Random().nextInt(0, this.tabl.length-3)
-                        }; alrsonar = false;
-                        for (int i = 0; i < 3; i++) {
-                            for (int j = 0; j < 3; j++) {
-                                if (this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] >= 48 && 
-                                    this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] <= 57
-                                    ) {
-                                    alrsonar = true;
-                                }
-                            }
-                        }
-                    } while (alrsonar);
-                    
-                    int sonaramnt = 0;
-                    
-                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
-                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
-                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
-                            if (this.tabl[i][j] == 'X') {
-                                for (int s = 0; s < this.ships.length; s++) {
-                                    for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
-                                        for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
-                                            if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
-                                                if (!this.ships[s].isSonared()) {
-                                                    this.ships[s].setSonared(true);
-                                                    sonaramnt++;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
-                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
-                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
-                            if (this.tabl[i][j] == 'X') {
-                                for (int s = 0; s < this.ships.length; s++) {
-                                    for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
-                                        for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
-                                            if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
-                                                if (this.ships[s].isSonared()) {
-                                                    this.ships[s].setSonared(false);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+3; i++) {
-                        for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+3; j++) {
-                            if (this.sonarArea(i, j, mSonarPosXY, inverted)) {continue;}
-                            this.disp[i][j] = (Integer.toString(sonaramnt)).charAt(0);
-                        }
-                    }
-                            
-                }
-                    
-                
+                this.miniSonar();
                 break;
             case 3: //laser escaner de columna
                 int colTarg; do {
@@ -219,12 +150,154 @@ public class Tablero {
         return res;
     }
     
-    private boolean sonarArea(int i, int j, int[] pos, boolean inv) {
+    private boolean sonarArea(int i, int j, int[] pos, boolean inv, boolean notinv, int lng) {
         return 
-        (i == pos[0] && j == pos[1] && !inv) ||
-        (i == pos[0]+2 && j == pos[1]+2 && !inv) ||
-        (i == pos[0]+2 && j == pos[1] && inv) ||
-        (i == pos[0] && j == pos[1]+2 && inv);
+        (i == pos[0] && j == pos[1] && inv) ||
+        (i == pos[0]+lng-1 && j == pos[1]+lng-1 && inv) ||
+        (i == pos[0]+lng-1 && j == pos[1] && notinv) ||
+        (i == pos[0] && j == pos[1]+lng-1 && notinv);
+    }
+    
+    private void miniSonar() {
+        for (int z = 0; z < 2; z++) {
+            int lng = 3;
+            int[] mSonarPosXY;
+            boolean inverted = new Random().nextBoolean(); 
+            boolean alrsonar; do {
+                mSonarPosXY = new int[]{
+                    new Random().nextInt(0, this.tabl.length-lng), 
+                    new Random().nextInt(0, this.tabl.length-lng)
+                }; alrsonar = false;
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] >= 48 && 
+                            this.disp[i+mSonarPosXY[0]][j+mSonarPosXY[1]] <= 57
+                            ) {
+                            alrsonar = true;
+                        }
+                    }
+                }
+            } while (alrsonar);
+
+            int sonaramnt = 0;
+
+            for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+                for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                    if (this.sonarArea(i, j, mSonarPosXY, inverted, !inverted, lng)) {continue;}
+                    if (this.tabl[i][j] == 'X') {
+                        for (int s = 0; s < this.ships.length; s++) {
+                            for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
+                                for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
+                                    if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
+                                        if (!this.ships[s].isSonared()) {
+                                            this.ships[s].setSonared(true);
+                                            sonaramnt++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+                for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                    if (this.sonarArea(i, j, mSonarPosXY, inverted, !inverted, lng)) {continue;}
+                    if (this.tabl[i][j] == 'X') {
+                        for (int s = 0; s < this.ships.length; s++) {
+                            for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
+                                for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
+                                    if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
+                                        if (this.ships[s].isSonared()) {
+                                            this.ships[s].setSonared(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+                for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                    if (this.sonarArea(i, j, mSonarPosXY, inverted, !inverted, lng)) {continue;}
+                    this.disp[i][j] = (Integer.toString(sonaramnt)).charAt(0);
+                }
+            }
+
+        }
+    }
+    
+    private void normalSonar() {
+        int lng = 5;
+        int[] mSonarPosXY = new int[2];
+        do {
+            String cmd; do {
+                cmd = SC.scanString("@Ingrese locación para apuntar el sonar (C2-H7: %n");
+            } while (cmd.length() != 2);
+            mSonarPosXY = new int[]{
+                cmd.toUpperCase().charAt(0)-67,
+                cmd.charAt(1)-50
+            };
+            if ((mSonarPosXY[0] >= 0 && mSonarPosXY[0] < this.tabl.length-lng) &&
+                (mSonarPosXY[1] >= 0 && mSonarPosXY[1] < this.tabl.length-lng))
+            {break;}
+            
+        } while (true);
+        
+        System.out.println(mSonarPosXY[0]);
+            System.out.println(mSonarPosXY[1]);
+
+        int sonaramnt = 0;
+
+        for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+            for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                if (this.sonarArea(i, j, mSonarPosXY, true, true, lng)) {continue;}
+                if (this.tabl[i][j] == 'X') {
+                    for (int shp = 0; shp < this.ships.length; shp++) {
+                        this.ships[shp].printShip();
+                        for (int sy = 0; sy < this.ships[shp].getYspaces().length; sy++) {
+                            for (int sx = 0; sx < this.ships[shp].getXspaces().length; sx++) {
+                                if (this.ships[shp].getYspaces()[sy] == i && this.ships[shp].getXspaces()[sx] == j) {
+                                    if (!this.ships[shp].isSonared()) {
+                                        this.ships[shp].setSonared(true);
+                                        sonaramnt++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+            for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                if (this.sonarArea(i, j, mSonarPosXY, true, true, lng)) {continue;}
+                if (this.tabl[i][j] == 'X') {
+                    for (int s = 0; s < this.ships.length; s++) {
+                        for (int sy = 0; sy < this.ships[s].getYspaces().length; sy++) {
+                            for (int sx = 0; sx < this.ships[s].getXspaces().length; sx++) {
+                                if (this.ships[s].getYspaces()[sy] == i && this.ships[s].getXspaces()[sx] == j) {
+                                    if (this.ships[s].isSonared()) {
+                                        this.ships[s].setSonared(false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = mSonarPosXY[0]; i < mSonarPosXY[0]+lng; i++) {
+            for (int j = mSonarPosXY[1]; j < mSonarPosXY[1]+lng; j++) {
+                if (this.sonarArea(i, j, mSonarPosXY, true, true, lng)) {continue;}
+                this.disp[i][j] = (Integer.toString(sonaramnt)).charAt(0);
+            }
+        }
     }
     
 }

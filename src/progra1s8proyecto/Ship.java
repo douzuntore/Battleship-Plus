@@ -127,7 +127,7 @@ public class Ship {
         return SC.fillCharBiArr(new char[this.lngY][this.lngX], 'X');
     }
     
-    // toString
+    // Ver características de una nave en salida
     
     public void printShip() {
         SC.printCharBiArr(this.matrixImage(),"@Nave: "," ");
