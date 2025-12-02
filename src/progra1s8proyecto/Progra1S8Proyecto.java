@@ -25,7 +25,13 @@ public class Progra1S8Proyecto {
         
         JuegoNormal.tableroCambio(SC.scanInt("_"), arsn);
         
-        SC.printCharBiArr(JuegoNormal.getDisp(), "-", "]");
+        JuegoNormal.printTablero("_");
+        
+        //JuegoNormal.tableroCambio(SC.scanInt("_"), arsn);
+        
+        //JuegoNormal.printTablero("_");
+        
+        JuegoNormal.shootingPhase();
         
     }
     

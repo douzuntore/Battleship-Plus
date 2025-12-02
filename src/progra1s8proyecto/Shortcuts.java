@@ -228,8 +228,8 @@ public class Shortcuts {
         String[] separs = new String[2];
         switch (separ.charAt(0)) {
             case ' ':
-                separs[0] = "%-2c";
-                separs[1] = "";
+                separs[0] = "%2c";
+                separs[1] = " ";
                 break;
             case ']':
                 separs[0] = "[%c";
