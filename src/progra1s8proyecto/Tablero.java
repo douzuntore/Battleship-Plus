@@ -390,7 +390,7 @@ public class Tablero {
     //Cañonazos
     
     public void shootingPhase(int ronda) {
-        for (int z = 0; z < this.ships.length+3; z++) {
+        for (int z = 0; z < this.ships.length+new Random().nextInt(4,6); z++) {
             
             this.printTablero("@%n|.. .  .   .        RONDA "+ronda+"        .   .  . ..|%n%n");
             

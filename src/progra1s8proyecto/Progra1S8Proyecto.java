@@ -115,10 +115,10 @@ public class Progra1S8Proyecto {
                     "%nEl objetivo dentro de este juego es derribar todas%n"
                   + "las naves dentro del terreno del juego. Antes de%n"
                   + "realizar tus disparos, dispones de distintas%n"
-                  + "herramientas para realizar tus disparos. Puedes elegir%n"
+                  + "herramientas para localizar las naves. Puedes elegir%n"
                   + "una opción para saber la función de tus herramientas.%n");
             String a; switch (new Scut().menu(new Arsenal().getWpnNames(), "_", "@%n>> ", "_")) {
-                case 0:
+                case 1:
                     System.out.printf(""
                             + "%nEl sonar escanea un area para determinar cuantas naves se%n"
                             + "encuentran dentro de ella. Este sonar puede ser puesto en una%n"
@@ -127,7 +127,7 @@ public class Progra1S8Proyecto {
                             + ">> (enter) ");
                     a = new Scut().scanString("_");
                     break;
-                case 1:
+                case 2:
                     System.out.printf(""
                             + "%nEl sonar escanea un area para determinar cuantas naves se%n"
                             + "encuentran dentro de ella. Este sonar es apuntado aleatoriamente%n"
@@ -136,7 +136,7 @@ public class Progra1S8Proyecto {
                             + ">> (enter) ");
                     a = new Scut().scanString("_");
                     break;
-                case 2:
+                case 3:
                     System.out.printf(""
                             + "%nEl drón reccore una linea recta para indicarte si hay una%n"
                             + "nave del lado derecho o izquierdo de su recorrido. Este dron%n"
@@ -145,7 +145,7 @@ public class Progra1S8Proyecto {
                             + ">> (enter) ");
                     a = new Scut().scanString("_");
                     break;
-                case 3:
+                case 4:
                     System.out.printf(""
                             + "%nEl drón reccore una linea recta para indicarte si hay una%n"
                             + "nave del lado derecho o izquierdo de su recorrido. Este dron%n"
@@ -154,7 +154,7 @@ public class Progra1S8Proyecto {
                             + ">> (enter) ");
                     a = new Scut().scanString("_");
                     break;
-                case 4:
+                case 5:
                     System.out.printf(""
                             + "%nEl recalibre sirve para limpiar una gran franja de tu pantalla.%n"
                             + "Usalo si te ves inconforme con la información de han adquirido tus%n"
