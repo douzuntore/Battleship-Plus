@@ -18,7 +18,7 @@ public class Tablero {
     private int sunkenShips = 0;
     private boolean win = false;
     
-    private static Shortcuts SC = new Shortcuts();
+    private static Scut SC = new Scut();
 
     public char[][] getTabl() {
         return tabl;
@@ -40,6 +40,15 @@ public class Tablero {
     public void setShips(Ship[] ships) {
         this.ships = ships;
     }
+
+    public int getSunkenShips() {
+        return sunkenShips;
+    }
+    public void setSunkenShips(int sunkenShips) {
+        this.sunkenShips = sunkenShips;
+    }
+    
+    
 
     public boolean isWin() {
         return win;
@@ -91,8 +100,8 @@ public class Tablero {
     }
     // Cambio del tablero en base a la arma usada
     
-    public void tableroCambio(int arma, Arma arsenal) {
-        switch (arsenal.getArmas()[arma]) {
+    public void tableroCambio(int arma, Arsenal arsen) {
+        switch (arsen.getArmas()[arma]) {
             case 1: //sonar
                 this.normalSonar();
                 break;
@@ -100,48 +109,48 @@ public class Tablero {
                 this.miniSonar();
                 break;
             case 3: //laser escaner de columna
-                int colTarg; do {
-                    colTarg = SC.scanInt("@Ingrese fila por la que pasará el drón: ");
-                } while (
-                        !(colTarg >= 0 && colTarg < this.tabl.length)
-                        );
-                for (int i = 0; i < this.tabl.length; i++) {
-                    for (int j = 0; j < this.tabl[0].length; j++) {
-                        if (j == colTarg) {
-                            this.disp[i][j] = this.scannerCheck(i, j);
-                        }
-                    }
-                }
-                break;
-            case 4: //laser escaner de fila
                 int rowTarg; do {
-                    rowTarg = SC.scanInt("@Ingrese fila por la que pasará el drón: ");
+                    rowTarg = SC.scanInt("@Ingrese columna por la que pasará el drón (0-9): %n>> ");
                 } while (
                         !(rowTarg >= 0 && rowTarg < this.tabl.length)
                         );
                 for (int i = 0; i < this.tabl.length; i++) {
                     for (int j = 0; j < this.tabl[0].length; j++) {
-                        if (i == rowTarg) {
+                        if (j == rowTarg) {
                             this.disp[i][j] = this.scannerCheck(i, j);
                         }
                     }
                 }
                 break;
+
+            case 4: //laser escaner de fila
+                char colTarg; do {
+                    colTarg = SC.scanChar("@Ingrese fila por la que pasará el drón (a-h): %n>> ");
+                } while (
+                        !(colTarg >= 97 && colTarg < this.tabl.length+97)
+                        );
+                for (int i = 0; i < this.tabl.length; i++) {
+                    for (int j = 0; j < this.tabl[0].length; j++) {
+                        if (i == colTarg-97) {
+                            this.disp[i][j] = this.scannerCheck(i, j);
+                        }
+                    }
+                }
+                break;
+
             case 5:
                 this.displayClean(new Random().nextInt(0,6));
                 break;
         }
         
-        arsenal.getArmas()[arma] = 0; arsenal.setArmas(SC.condenseIntArr(arsenal.getArmas(), 0)); 
-        
-        
+        arsen.getArmas()[arma] = 0; arsen.setArmas(SC.condenseIntArr(arsen.getArmas(), 0)); 
         
     }
     
     private void displayClean(int orgcol) {
         for (int i = 0; i < this.tabl.length; i++) {
             for (int j = 0; j < this.tabl[0].length; j++) {
-                if (i >= orgcol && i <= orgcol+3) {
+                if (j >= orgcol && j <= orgcol+4) {
                     this.disp[i][j] = ' ';
                 }
             }
@@ -261,7 +270,7 @@ public class Tablero {
         int[] mSonarPosXY = new int[2];
         do {
             String cmd; do {
-                cmd = SC.scanString("@Ingrese locación para apuntar el sonar (C2-H7): %n");
+                cmd = SC.scanString("@Ingrese locación para apuntar el sonar (c2-h7): %n>> ");
             } while (cmd.length() != 2);
             mSonarPosXY = new int[]{
                 cmd.toUpperCase().charAt(0)-67,
@@ -333,17 +342,17 @@ public class Tablero {
     //Imprimir el atributo disp (tablero en pantalla)
     
     public void printTablero(String id) {
-        char[] rows = new char[]{'A','B','C','D','E','F','G','H','I','J'};
+        char[] rows = new char[]{'a','b','c','d','e','f','g','h','i','j'};
         char[] cols = new char[]{'0','1','2','3','4','5','6','7','8','9'};
         switch (id.charAt(0)) {
             case '#':
-                System.out.println("Contenido de la matriz "+id.substring(1,id.length())+": ");
+                System.out.printf("Contenido de la matriz "+id.substring(1,id.length())+": ");
                 break;
             case '@':
-                System.out.println(id.substring(1,id.length()));
+                System.out.printf(id.substring(1,id.length()));
                 break;
             case '-':
-                System.out.println("Contenido de la matriz: ");
+                System.out.printf("Contenido de la matriz: ");
                 break;
             case '_':
                 break;
@@ -355,13 +364,39 @@ public class Tablero {
         }
     }
     
+    public void printNaves(String id) {
+        char[] rows = new char[]{'a','b','c','d','e','f','g','h','i','j'};
+        char[] cols = new char[]{'0','1','2','3','4','5','6','7','8','9'};
+        switch (id.charAt(0)) {
+            case '#':
+                System.out.printf("Contenido de la matriz "+id.substring(1,id.length())+": ");
+                break;
+            case '@':
+                System.out.printf(id.substring(1,id.length()));
+                break;
+            case '-':
+                System.out.printf("Contenido de la matriz: ");
+                break;
+            case '_':
+                break;
+        }
+        System.out.print("   "); SC.printCharArr(cols,"_"," ");
+        for (int i = 0; i < 10; i++) {
+            System.out.print(" "+rows[i]+" ");
+            SC.printCharArr(this.tabl[i],"_","]");
+        }
+    }
+    
     //Cañonazos
     
-    public void shootingPhase() {
-        for (int z = 0; z < this.ships.length; z++) {
+    public void shootingPhase(int ronda) {
+        for (int z = 0; z < this.ships.length+3; z++) {
+            
+            this.printTablero("@%n|.. .  .   .        RONDA "+ronda+"        .   .  . ..|%n%n");
+            
             int[] shotXY = new int[2]; do {
                 String cmd; do {
-                    cmd = SC.scanString("@Ingrese locación para disparar (A1-J9): %n");
+                    cmd = SC.scanString("@("+(this.ships.length+3-z)+"/"+(this.ships.length+3)+" disparos) Ingrese locación para disparar. (A1-J9): %n>> ");
                 } while (cmd.length() != 2);
                 shotXY = new int[]{
                     cmd.toUpperCase().charAt(0)-65,
@@ -373,7 +408,7 @@ public class Tablero {
 
             } while (true);
             
-            if (this.disp[shotXY[0]][shotXY[1]] == 'X') {z--; continue;}
+            if (this.disp[shotXY[0]][shotXY[1]] == 'X' || this.disp[shotXY[0]][shotXY[1]] == '-' ) {z--; continue;}
             
             if (this.tabl[shotXY[0]][shotXY[1]] == 'X') {
                 for (int shp = 0; shp < this.ships.length; shp++) {
@@ -400,9 +435,9 @@ public class Tablero {
                 this.disp[shotXY[0]][shotXY[1]] = '-';
             }
             
-            this.printTablero("_");
-            
             if (this.sunkenShips == this.ships.length) {this.win = true; break;}
+            
+            ronda++;
             
         }
     }

@@ -47,12 +47,12 @@ esta clase tiene un conjunto de atajos utiles para distintas tareas, aqui va una
 import java.util.Scanner;
 import java.util.Random;
 
-public class Shortcuts {
+public class Scut {
     
     Scanner entr = new Scanner(System.in);
     Random rng = new Random();
     
-    public byte menu(String[] incisos, String id1, String id2) {
+    public byte menu(String[] incisos, String id1, String id2, String id3) {
         int numdeinv = 0;
         printCmd(id1,"---------| Menu |---------","");
         System.out.println("");
@@ -79,7 +79,8 @@ public class Shortcuts {
         
         byte opcion;
         boolean continuar = false; do {
-            opcion = scanByte("@Ingresa una opción: ");
+            printCmd(id3,"Ingresa la opción",": ");
+            opcion = scanByte("_");
             if (opcion >= 0 && opcion <= incisos.length-1) {
                 if (invalidos.length != 0) {
                     for (int i = 0; i < invalidos.length; i++) {

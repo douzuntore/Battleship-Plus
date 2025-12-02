@@ -87,7 +87,7 @@ public class Ship {
     }
     
     private static Random rng = new Random();
-    private static Shortcuts SC = new Shortcuts();
+    private static Scut SC = new Scut();
     
     // Constructor
 
